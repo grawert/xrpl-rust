@@ -14,11 +14,10 @@ use crate::core::keypairs::utils::*;
 use crate::core::keypairs::CryptoImplementation;
 use alloc::format;
 use alloc::string::String;
+use alloc::vec;
 use alloc::vec::Vec;
 use core::convert::TryInto;
 use core::str::FromStr;
-use crypto_bigint::Encoding;
-use crypto_bigint::U256;
 use ed25519_dalek::ed25519::signature::SignerMut;
 use ed25519_dalek::Verifier;
 use ed25519_dalek::SECRET_KEY_LENGTH;
@@ -33,14 +32,28 @@ pub struct Secp256k1;
 pub struct Ed25519;
 
 impl Secp256k1 {
+    /// Constant time byte to hex String conversion
+    fn _bytes_to_hex_str(bytes: &[u8]) -> String {
+        const HEX_ALPHABET: &[u8; 16] = b"0123456789ABCDEF";
+        let mut hex_str = vec![0u8; bytes.len() * 2];
+        for (i, &byte) in bytes.iter().enumerate() {
+            let hi = HEX_ALPHABET[(byte >> 4) as usize];
+            let lo = HEX_ALPHABET[(byte & 0x0F) as usize];
+            hex_str[2 * i] = hi;
+            hex_str[2 * i + 1] = lo;
+        }
+
+        unsafe { String::from_utf8_unchecked(hex_str) }
+    }
+
     /// Hex encode the private key.
     fn _private_key_to_str(key: secp256k1::SecretKey) -> String {
-        hex::encode_upper(key.as_ref())
+        Secp256k1::_bytes_to_hex_str(key.as_ref())
     }
 
     /// Hex encode the public key.
     fn _public_key_to_str(key: secp256k1::PublicKey) -> String {
-        hex::encode_upper(key.serialize())
+        Secp256k1::_bytes_to_hex_str(key.serialize().as_ref())
     }
 
     /// Format a provided key.
@@ -49,7 +62,6 @@ impl Secp256k1 {
     }
 
     /// Format the public and private keys.
-    /// TODO Make function constant time
     fn _format_keys(
         public: secp256k1::PublicKey,
         private: secp256k1::SecretKey,
@@ -66,11 +78,8 @@ impl Secp256k1 {
     }
 
     /// Determing if the provided secret key is valid.
-    /// TODO Make function constant time
     fn _is_secret_valid(key: [u8; u32::BITS as usize]) -> bool {
-        let key_bytes = U256::from_be_bytes(key);
-        key_bytes >= U256::ONE
-            && key_bytes <= U256::from_be_bytes(secp256k1::constants::CURVE_ORDER)
+        secp256k1::SecretKey::from_slice(&key).is_ok()
     }
 
     /// Concat candidate key.
