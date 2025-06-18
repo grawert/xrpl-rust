@@ -1,5 +1,8 @@
 //! General XRPL Address Codec Exception.
 
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[derive(Debug, Clone, PartialEq, Error)]
@@ -29,9 +32,6 @@ pub enum XRPLAddressCodecException {
     UnexpectedPayloadLength { expected: usize, found: usize },
     #[error("Base58 decode error: {0}")]
     Base58DecodeError(#[from] bs58::decode::Error),
-    #[error("Vec resize error")]
-    VecResizeError(#[from] alloc::vec::Vec<u8>),
+    #[error("Vec resize error: expected length {expected}, got {actual}")]
+    VecResizeError { expected: usize, actual: usize },
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLAddressCodecException {}

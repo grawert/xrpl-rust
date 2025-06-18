@@ -1,3 +1,6 @@
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[cfg(feature = "helpers")]
@@ -60,6 +63,3 @@ impl From<reqwest::Error> for XRPLClientException {
         XRPLClientException::XRPLJsonRpcError(XRPLJsonRpcException::ReqwestError(error))
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLClientException {}

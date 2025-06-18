@@ -2,6 +2,10 @@
 
 use crate::utils::exceptions::XRPRangeException;
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -84,21 +88,3 @@ pub enum XRPLVectorException {
     #[error("Invalid vector 256 bytes")]
     InvalidVector256Bytes,
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLTypeException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLSerializeArrayException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLSerializeMapException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLXChainBridgeException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLHashException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLVectorException {}

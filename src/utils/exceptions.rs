@@ -1,6 +1,10 @@
 //! Exception for invalid XRP Ledger amount data.
 
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[cfg(feature = "models")]
@@ -106,15 +110,3 @@ impl From<serde_json::Error> for XRPLUtilsException {
         XRPLUtilsException::SerdeJsonError(error.into())
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLTimeRangeException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPRangeException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for ISOCodeException {}
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLUtilsException {}

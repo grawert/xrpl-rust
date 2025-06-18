@@ -1,4 +1,8 @@
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 use super::XRPLOtherResult;

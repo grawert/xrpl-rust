@@ -3,6 +3,10 @@ use crate::{
     models::transactions::{account_set::AccountSetFlag, payment::PaymentFlag},
 };
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -33,9 +37,6 @@ pub enum XRPLTransactionException {
     TxMustBeSigned,
 }
 
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLTransactionException {}
-
 #[derive(Debug, PartialEq, Error)]
 pub enum XRPLTransactionFieldException {
     #[error("There is no transaction common field `{0:?}`")]
@@ -62,18 +63,12 @@ pub enum XRPLAccountSetException {
     SetFieldWhenUnsetRequiredFlag { field: String, flag: AccountSetFlag },
 }
 
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLAccountSetException {}
-
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum XRPLNFTokenCancelOfferException {
     /// A collection was defined to be empty.
-    #[error("The value of the field `{field:?}` is not allowed to be empty (type `{r#type:?}`). If the field is optional, define it to be `None`")]
+    #[error("The value of the field `{field:?}` is not allowed to be empty (type `{type:?}`). If the field is optional, define it to be `None`")]
     CollectionEmpty { field: String, r#type: String },
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLNFTokenCancelOfferException {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum XRPLNFTokenCreateOfferException {
@@ -84,9 +79,6 @@ pub enum XRPLNFTokenCreateOfferException {
     #[error("The optional field `{field:?}` is not allowed to be defined for {context:?}")]
     IllegalOption { field: String, context: String },
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLNFTokenCreateOfferException {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum XRPLPaymentException {
@@ -107,9 +99,6 @@ pub enum XRPLPaymentException {
     #[error("For the flag `{flag:?}` to be set it is required to define the field `{field:?}`")]
     FlagRequiresField { flag: PaymentFlag, field: String },
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLPaymentException {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[non_exhaustive]
@@ -150,18 +139,12 @@ pub enum XRPLSignerListSetException {
     SignerQuorumExceedsSignerWeight { max: u32, found: u32 },
 }
 
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLSignerListSetException {}
-
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[non_exhaustive]
 pub enum XRPLXChainClaimException {
     #[error("`amount` must match either `locking_chain_issue` or `issuing_chain_issue`")]
     AmountMismatch,
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLXChainClaimException {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[non_exhaustive]
@@ -182,18 +165,12 @@ pub enum XRPLXChainCreateBridgeException {
     MinAccountCreateAmountMustBeNumberic,
 }
 
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLXChainCreateBridgeException {}
-
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[non_exhaustive]
 pub enum XRPLXChainCreateClaimIDException {
     #[error("`other_chain_source` must be a valid XRPL address")]
     OtherChainSourceIsInvalid,
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLXChainCreateClaimIDException {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[non_exhaustive]
@@ -211,6 +188,3 @@ pub enum XRPLAMMCreateException {
     #[error("The trading fee must be between 0 and {max:?} (found {found:?})")]
     TradingFeeOutOfRange { max: u16, found: u16 },
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLAMMCreateException {}

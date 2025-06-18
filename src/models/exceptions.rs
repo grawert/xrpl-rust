@@ -3,6 +3,10 @@
 use core::num::{ParseFloatError, ParseIntError};
 
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 use crate::XRPLSerdeJsonError;
@@ -83,9 +87,6 @@ pub enum XRPLModelException {
     #[error("{0}")]
     XRPLTransactionError(#[from] XRPLTransactionException),
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLModelException {}
 
 impl From<serde_json::Error> for XRPLModelException {
     fn from(error: serde_json::Error) -> Self {

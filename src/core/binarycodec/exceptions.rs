@@ -3,6 +3,10 @@
 use crate::utils::exceptions::XRPRangeException;
 
 use super::types::exceptions::XRPLTypeException;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -53,6 +57,3 @@ impl From<core::array::TryFromSliceError> for XRPLBinaryCodecException {
         XRPLBinaryCodecException::TryFromSliceError
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLBinaryCodecException {}

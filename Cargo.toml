@@ -64,6 +64,7 @@ zeroize = "1.5.7"
 hashbrown = { version = "0.15.0", features = ["serde"] }
 fnv = { version = "1.0.7", default-features = false }
 derive-new = { version = "0.7.0", default-features = false }
+thiserror = "2.0.12"
 thiserror-no-std = "2.0.2"
 embassy-sync = "0.6.0"
 

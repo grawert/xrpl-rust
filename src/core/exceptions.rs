@@ -1,4 +1,8 @@
 use alloc::string::String;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 use crate::{utils::exceptions::ISOCodeException, XRPLSerdeJsonError};
@@ -83,6 +87,3 @@ impl From<XRPLVectorException> for XRPLCoreException {
         ))
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLCoreException {}

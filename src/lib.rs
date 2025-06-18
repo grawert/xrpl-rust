@@ -23,6 +23,10 @@
 use ::core::fmt::Display;
 
 use alloc::string::{String, ToString};
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[cfg(not(feature = "std"))]

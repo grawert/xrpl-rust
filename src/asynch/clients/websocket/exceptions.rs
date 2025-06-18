@@ -6,6 +6,10 @@ use embedded_io_async::{Error as EmbeddedIoError, ErrorKind};
 #[cfg(all(feature = "websocket", not(feature = "std")))]
 use embedded_websocket_embedded_io::framer_async::FramerError;
 use futures::channel::oneshot::Canceled;
+
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 #[derive(Debug, Error)]
@@ -73,6 +77,3 @@ impl EmbeddedIoError for XRPLWebSocketException {
         }
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLWebSocketException {}

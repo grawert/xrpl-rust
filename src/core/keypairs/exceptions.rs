@@ -1,5 +1,8 @@
 //! XRPL keypair codec exceptions.
 
+#[cfg(feature = "std")]
+use thiserror::Error;
+#[cfg(not(feature = "std"))]
 use thiserror_no_std::Error;
 
 use crate::constants::CryptoAlgorithm;
@@ -33,6 +36,3 @@ impl From<ed25519_dalek::ed25519::Error> for XRPLKeypairsException {
         XRPLKeypairsException::ED25519Error
     }
 }
-
-#[cfg(feature = "std")]
-impl alloc::error::Error for XRPLKeypairsException {}
